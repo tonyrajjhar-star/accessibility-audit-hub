@@ -18,7 +18,7 @@ export function DefectSummaryPanel() {
   const [status, setStatus] = useState<string>("All");
   const [standard, setStandard] = useState<string>("All");
   const [search, setSearch] = useState("");
-  const [selectedId, setSelectedId] = useState<string>(defects[0].id);
+  const [selectedId, setSelectedId] = useState<string>(defects[0]!.id);
   const [expanded, setExpanded] = useState(false);
 
   const filtered = useMemo(
@@ -33,7 +33,7 @@ export function DefectSummaryPanel() {
     [severity, status, standard, search],
   );
 
-  const selected: Defect = defects.find((d) => d.id === selectedId) ?? defects[0];
+  const selected: Defect = defects.find((d) => d.id === selectedId) ?? defects[0]!;
   const total = 47;
   const activeCount = defects.filter((d) => d.status === "Active").length + 18;
   const resolvedCount = defects.filter((d) => d.status === "Resolved").length + 10;
