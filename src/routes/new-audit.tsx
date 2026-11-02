@@ -35,14 +35,28 @@ const resultTabs = [
 
 type TabKey = (typeof resultTabs)[number]["key"];
 
+const standardOptions = [
+  "WCAG 2.1 AA",
+  "WCAG 2.2 AA",
+  "EN 301 549",
+  "Section 508",
+  "ARIA Practices",
+] as const;
+
 function NewAudit() {
   const [url, setUrl] = useState("https://www.example.com");
   const [forceRefresh, setForceRefresh] = useState(true);
   const [scope, setScope] = useState<"full" | "selected" | "single">("full");
+  const [selectedStandards, setSelectedStandards] = useState<string[]>(["WCAG 2.1 AA", "EN 301 549"]);
   const [progress, setProgress] = useState(0);
   const [running, setRunning] = useState(false);
   const [tab, setTab] = useState<TabKey>("defects");
   const timer = useRef<number | null>(null);
+
+  const toggleStandard = (s: string) => {
+    setSelectedStandards((prev) => (prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]));
+  };
+
 
   useEffect(() => () => {
     if (timer.current) window.clearInterval(timer.current);
