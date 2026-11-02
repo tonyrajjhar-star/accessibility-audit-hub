@@ -15,6 +15,12 @@ export interface AuditRow {
   defectsFixed: number;
   status: AuditStatus;
   date: string;
+  /** Defect counts by severity — sum equals defectsFound */
+  severityCounts: Record<Severity, number>;
+  /** Compliance pie split, percentages that total 100 */
+  complianceBreakdown: { compliant: number; nonCompliant: number; notApplicable: number };
+  /** Outstanding items awaiting human verification */
+  pendingVerification: number;
 }
 
 export interface Defect {
@@ -46,16 +52,66 @@ export interface ReviewItem {
 }
 
 export const auditHistory: AuditRow[] = [
-  { id: "a1", name: "Marketing Site", targetUrl: "https://www.example.com", standards: ["WCAG 2.1 AA", "EN 301 549"], score: 88, defectsFound: 47, defectsFixed: 31, status: "Passed", date: "Apr 24, 2025" },
-  { id: "a2", name: "Customer Portal", targetUrl: "https://portal.example.com", standards: ["EN 301 549", "WCAG 2.2 AA"], score: 76, defectsFound: 62, defectsFixed: 28, status: "Failed", date: "Apr 20, 2025" },
-  { id: "a3", name: "Product Docs", targetUrl: "https://docs.example.com", standards: ["WCAG 2.1 AA", "Section 508"], score: 92, defectsFound: 18, defectsFixed: 17, status: "Passed", date: "Apr 15, 2025" },
-  { id: "a4", name: "Mobile App (Web)", targetUrl: "https://app.example.com", standards: ["Section 508", "WCAG 2.1 AA"], score: 68, defectsFound: 104, defectsFixed: 52, status: "In Progress", date: "Apr 10, 2025" },
-  { id: "a5", name: "Support Center", targetUrl: "https://support.example.com", standards: ["WCAG 2.2 AA", "EN 301 549"], score: 81, defectsFound: 38, defectsFixed: 20, status: "Passed", date: "Mar 28, 2025" },
-  { id: "a6", name: "Investor Relations", targetUrl: "https://investors.example.com", standards: ["EN 301 549", "Section 508"], score: 58, defectsFound: 91, defectsFixed: 40, status: "Failed", date: "Mar 12, 2025" },
-  { id: "a7", name: "Careers", targetUrl: "https://careers.example.com", standards: ["WCAG 2.1 AA", "EN 301 549"], score: 85, defectsFound: 29, defectsFixed: 25, status: "Passed", date: "Feb 26, 2025" },
-  { id: "a8", name: "Blog", targetUrl: "https://blog.example.com", standards: ["WCAG 2.2 AA", "Section 508"], score: 73, defectsFound: 66, defectsFixed: 33, status: "Failed", date: "Feb 14, 2025" },
-  { id: "a9", name: "Partner Portal", targetUrl: "https://partners.example.com", standards: ["EN 301 549", "WCAG 2.1 AA"], score: 90, defectsFound: 22, defectsFixed: 18, status: "Passed", date: "Jan 30, 2025" },
-  { id: "a10", name: "Legacy Site", targetUrl: "https://legacy.example.com", standards: ["Section 508", "WCAG 2.2 AA"], score: 49, defectsFound: 120, defectsFixed: 37, status: "Failed", date: "Jan 12, 2025" },
+  {
+    id: "a1", name: "Marketing Site", targetUrl: "https://www.example.com", standards: ["WCAG 2.1 AA", "EN 301 549"],
+    score: 88, defectsFound: 47, defectsFixed: 31, status: "Passed", date: "Apr 24, 2025", pendingVerification: 4,
+    severityCounts: { Critical: 12, Serious: 18, Moderate: 11, Minor: 6 },
+    complianceBreakdown: { compliant: 92, nonCompliant: 6, notApplicable: 2 },
+  },
+  {
+    id: "a2", name: "Customer Portal", targetUrl: "https://portal.example.com", standards: ["EN 301 549", "WCAG 2.2 AA"],
+    score: 76, defectsFound: 62, defectsFixed: 28, status: "Failed", date: "Apr 20, 2025", pendingVerification: 9,
+    severityCounts: { Critical: 20, Serious: 24, Moderate: 12, Minor: 6 },
+    complianceBreakdown: { compliant: 84, nonCompliant: 13, notApplicable: 3 },
+  },
+  {
+    id: "a3", name: "Product Docs", targetUrl: "https://docs.example.com", standards: ["WCAG 2.1 AA", "Section 508"],
+    score: 92, defectsFound: 18, defectsFixed: 17, status: "Passed", date: "Apr 15, 2025", pendingVerification: 1,
+    severityCounts: { Critical: 3, Serious: 7, Moderate: 5, Minor: 3 },
+    complianceBreakdown: { compliant: 96, nonCompliant: 2, notApplicable: 2 },
+  },
+  {
+    id: "a4", name: "Mobile App (Web)", targetUrl: "https://app.example.com", standards: ["Section 508", "WCAG 2.1 AA"],
+    score: 68, defectsFound: 104, defectsFixed: 52, status: "In Progress", date: "Apr 10, 2025", pendingVerification: 14,
+    severityCounts: { Critical: 34, Serious: 38, Moderate: 22, Minor: 10 },
+    complianceBreakdown: { compliant: 74, nonCompliant: 22, notApplicable: 4 },
+  },
+  {
+    id: "a5", name: "Support Center", targetUrl: "https://support.example.com", standards: ["WCAG 2.2 AA", "EN 301 549"],
+    score: 81, defectsFound: 38, defectsFixed: 20, status: "Passed", date: "Mar 28, 2025", pendingVerification: 5,
+    severityCounts: { Critical: 9, Serious: 14, Moderate: 10, Minor: 5 },
+    complianceBreakdown: { compliant: 87, nonCompliant: 10, notApplicable: 3 },
+  },
+  {
+    id: "a6", name: "Investor Relations", targetUrl: "https://investors.example.com", standards: ["EN 301 549", "Section 508"],
+    score: 58, defectsFound: 91, defectsFixed: 40, status: "Failed", date: "Mar 12, 2025", pendingVerification: 17,
+    severityCounts: { Critical: 32, Serious: 31, Moderate: 19, Minor: 9 },
+    complianceBreakdown: { compliant: 66, nonCompliant: 30, notApplicable: 4 },
+  },
+  {
+    id: "a7", name: "Careers", targetUrl: "https://careers.example.com", standards: ["WCAG 2.1 AA", "EN 301 549"],
+    score: 85, defectsFound: 29, defectsFixed: 25, status: "Passed", date: "Feb 26, 2025", pendingVerification: 3,
+    severityCounts: { Critical: 5, Serious: 10, Moderate: 9, Minor: 5 },
+    complianceBreakdown: { compliant: 90, nonCompliant: 8, notApplicable: 2 },
+  },
+  {
+    id: "a8", name: "Blog", targetUrl: "https://blog.example.com", standards: ["WCAG 2.2 AA", "Section 508"],
+    score: 73, defectsFound: 66, defectsFixed: 33, status: "Failed", date: "Feb 14, 2025", pendingVerification: 8,
+    severityCounts: { Critical: 15, Serious: 22, Moderate: 18, Minor: 11 },
+    complianceBreakdown: { compliant: 80, nonCompliant: 16, notApplicable: 4 },
+  },
+  {
+    id: "a9", name: "Partner Portal", targetUrl: "https://partners.example.com", standards: ["EN 301 549", "WCAG 2.1 AA"],
+    score: 90, defectsFound: 22, defectsFixed: 18, status: "Passed", date: "Jan 30, 2025", pendingVerification: 2,
+    severityCounts: { Critical: 4, Serious: 8, Moderate: 6, Minor: 4 },
+    complianceBreakdown: { compliant: 94, nonCompliant: 4, notApplicable: 2 },
+  },
+  {
+    id: "a10", name: "Legacy Site", targetUrl: "https://legacy.example.com", standards: ["Section 508", "WCAG 2.2 AA"],
+    score: 49, defectsFound: 120, defectsFixed: 37, status: "Failed", date: "Jan 12, 2025", pendingVerification: 21,
+    severityCounts: { Critical: 45, Serious: 40, Moderate: 24, Minor: 11 },
+    complianceBreakdown: { compliant: 58, nonCompliant: 38, notApplicable: 4 },
+  },
 ];
 
 export const defects: Defect[] = [
