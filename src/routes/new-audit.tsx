@@ -102,90 +102,119 @@ function NewAudit() {
         </Link>
       </div>
 
-      {/* Steps */}
-      <div className="mt-8 grid gap-5 lg:grid-cols-3">
-        <section className="card-surface p-5">
-          <div className="flex items-center gap-3">
-            <span className="gradient-primary grid size-9 place-items-center rounded-full font-display text-base font-bold text-primary-foreground shadow-glow">1</span>
-            <h2 className="text-lg font-bold">Target</h2>
-          </div>
-          <label className="mt-4 block">
-            <span className="text-sm font-semibold">Website URL</span>
-            <input
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://www.example.com"
-              className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm shadow-soft outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20"
-            />
-          </label>
-          <button
-            onClick={() => toast.info("Project folder scanning — no ZIP upload required.")}
-            className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
-          >
-            <FolderOpen className="size-4" /> Or scan a project folder — no ZIP upload required
-          </button>
-          <label className="mt-4 flex cursor-pointer items-start gap-3">
+      {/* Target & Standards — one box containing Target (with Scan Scope) and Standards */}
+      <section className="card-surface mt-8 p-6">
+        <div className="grid gap-8 lg:grid-cols-2">
+          {/* 1. Target — includes Scan Scope */}
+          <div>
+            <div className="flex items-center gap-3">
+              <span className="gradient-primary grid size-9 place-items-center rounded-full font-display text-base font-bold text-primary-foreground shadow-glow">1</span>
+              <h2 className="text-lg font-bold">Target</h2>
+            </div>
+            <label className="mt-4 block">
+              <span className="text-sm font-semibold">Website URL</span>
+              <input
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://www.example.com"
+                className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm shadow-soft outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20"
+              />
+            </label>
             <button
-              role="switch"
-              aria-checked={forceRefresh}
-              onClick={() => setForceRefresh((v) => !v)}
-              className={cn(
-                "mt-0.5 h-6 w-11 shrink-0 rounded-full p-0.5 transition-colors",
-                forceRefresh ? "bg-primary" : "bg-muted-foreground/30",
-              )}
+              onClick={() => toast.info("Project folder scanning — no ZIP upload required.")}
+              className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
             >
-              <span className={cn("block size-5 rounded-full bg-white shadow transition-transform", forceRefresh && "translate-x-5")} />
+              <FolderOpen className="size-4" /> Or scan a project folder — no ZIP upload required
             </button>
-            <span className="text-sm font-medium">Force Refresh Audit — re-run from the beginning</span>
-          </label>
-        </section>
+            <label className="mt-4 flex cursor-pointer items-start gap-3">
+              <button
+                role="switch"
+                aria-checked={forceRefresh}
+                onClick={() => setForceRefresh((v) => !v)}
+                className={cn(
+                  "mt-0.5 h-6 w-11 shrink-0 rounded-full p-0.5 transition-colors",
+                  forceRefresh ? "bg-primary" : "bg-muted-foreground/30",
+                )}
+              >
+                <span className={cn("block size-5 rounded-full bg-white shadow transition-transform", forceRefresh && "translate-x-5")} />
+              </button>
+              <span className="text-sm font-medium">Force Refresh Audit — re-run from the beginning</span>
+            </label>
 
-        <section className="card-surface p-5">
-          <div className="flex items-center gap-3">
-            <span className="gradient-primary grid size-9 place-items-center rounded-full font-display text-base font-bold text-primary-foreground shadow-glow">2</span>
-            <h2 className="text-lg font-bold">Standards</h2>
+            {/* 3. Scan Scope — inside the Target section */}
+            <div className="mt-6 rounded-xl border border-border bg-background p-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-8 place-items-center rounded-full bg-secondary font-display text-sm font-bold text-primary">3</span>
+                <h3 className="font-bold">Scan Scope</h3>
+              </div>
+              <div className="mt-3 space-y-3">
+                {(
+                  [
+                    { key: "full", label: "Full site — scan all accessible pages" },
+                    { key: "selected", label: "Selected pages — choose specific pages" },
+                    { key: "single", label: "Single page — scan one page only" },
+                  ] as const
+                ).map((o) => (
+                  <label key={o.key} className="flex cursor-pointer items-start gap-3">
+                    <input
+                      type="radio"
+                      name="scope"
+                      checked={scope === o.key}
+                      onChange={() => setScope(o.key)}
+                      className="mt-1 size-4 accent-[var(--color-primary)]"
+                    />
+                    <span className="text-sm font-medium">{o.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">Select the accessibility standards to check against</p>
-          <select className="mt-3 w-full rounded-lg border border-input bg-card px-3 py-2.5 text-sm font-medium shadow-soft outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20">
-            <option>WCAG 2.1 AA, EN 301 549 +2 more</option>
-            <option>WCAG 2.1 AA</option>
-            <option>WCAG 2.2 AA</option>
-            <option>EN 301 549</option>
-            <option>Section 508</option>
-            <option>ARIA Practices</option>
-          </select>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Choose one or more standards — WCAG 2.1 A/AA, EN 301 549, ARIA Practices, Section 508
-          </p>
-        </section>
 
-        <section className="card-surface p-5">
-          <div className="flex items-center gap-3">
-            <span className="gradient-primary grid size-9 place-items-center rounded-full font-display text-base font-bold text-primary-foreground shadow-glow">3</span>
-            <h2 className="text-lg font-bold">Scan Scope</h2>
+          {/* 2. Standards — multiple choice selection */}
+          <div>
+            <div className="flex items-center gap-3">
+              <span className="gradient-primary grid size-9 place-items-center rounded-full font-display text-base font-bold text-primary-foreground shadow-glow">2</span>
+              <h2 className="text-lg font-bold">Standards</h2>
+            </div>
+            <p className="mt-3 text-sm text-muted-foreground">Select one or more accessibility standards to check against</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {standardOptions.map((s) => {
+                const checked = selectedStandards.includes(s);
+                return (
+                  <label
+                    key={s}
+                    className={cn(
+                      "flex cursor-pointer items-center gap-3 rounded-xl border px-3.5 py-3 text-sm font-medium shadow-soft transition-colors",
+                      checked ? "border-primary/50 bg-primary/10 text-primary" : "border-input bg-card hover:border-primary/30",
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleStandard(s)}
+                      className="size-4 rounded accent-[var(--color-primary)]"
+                    />
+                    {s}
+                  </label>
+                );
+              })}
+            </div>
+            {selectedStandards.length > 0 && (
+              <div className="mt-4 flex flex-wrap items-center gap-1.5">
+                <span className="text-xs font-semibold text-muted-foreground">Selected:</span>
+                {selectedStandards.map((s) => (
+                  <span key={s} className="inline-flex items-center gap-1 rounded-md border border-primary/20 bg-primary/8 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            )}
+            <p className="mt-3 text-sm text-muted-foreground">
+              Choose any combination — WCAG 2.1 A/AA, WCAG 2.2 AA, EN 301 549, ARIA Practices, Section 508
+            </p>
           </div>
-          <div className="mt-4 space-y-3">
-            {(
-              [
-                { key: "full", label: "Full site — scan all accessible pages" },
-                { key: "selected", label: "Selected pages — choose specific pages" },
-                { key: "single", label: "Single page — scan one page only" },
-              ] as const
-            ).map((o) => (
-              <label key={o.key} className="flex cursor-pointer items-start gap-3">
-                <input
-                  type="radio"
-                  name="scope"
-                  checked={scope === o.key}
-                  onChange={() => setScope(o.key)}
-                  className="mt-1 size-4 accent-[var(--color-primary)]"
-                />
-                <span className="text-sm font-medium">{o.label}</span>
-              </label>
-            ))}
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       {/* Actions */}
       <div className="mt-6 flex gap-3">
